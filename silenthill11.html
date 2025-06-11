@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Hill: Archivo Psicológico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Roboto+Mono:wght@300&display=swap" rel="stylesheet">
+    <style>
+        /* Definición de la fuente local para los títulos */
+        @font-face {
+            font-family: 'Silent Hill Title Font';
+            src: url('silent hill data/silent hill text/SILENT HILL FONT.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* --- Estilos Generales y Atmosféricos --- */
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #0d0d0d;
+            /* FONDO DE LA PÁGINA PRINCIPAL - IMAGEN LOCAL */
+            background-image: url('main_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ccc;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            text-align: center;
+            overflow-x: hidden;
+            font-size: 1.05em;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        body::before { /* Overlay de granulado para el fondo - IMAGEN LOCAL */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('noise_texture.png');
+            background-repeat: repeat;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Estilo de la barra de desplazamiento */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+
+        /* --- Contenido Principal de la Página (Título y Menú) --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-top: 50px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        header {
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Silent_Hill_symbol.svg/1200px-Silent_Hill_symbol.svg.png');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+            width: 100%;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            border-bottom: 2px solid #8B0000;
+            box-shadow: inset 0 -8px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            font-family: 'Silent Hill Title Font', 'Cinzel Decorative', serif;
+            color: #F8F8F8;
+            font-size: 6em;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8),
+                         0 0 30px rgba(0, 0, 0, 0.9),
+                         0 0 45px rgba(139, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border: 3px solid #6C0000;
+            border-radius: 8px;
+            letter-spacing: 12px;
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.95);
+            animation: fadeInScale 2s ease-out forwards, glitchText 0.4s infinite alternate 4s;
+            position: relative;
+            z-index: 2;
+            transform: scale(0.9);
+            opacity: 0;
+            margin-bottom: 40px;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.7) translateY(-20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes glitchText {
+            0%, 100% { text-shadow: 0 0 15px rgba(255, 0, 0, 0.8); transform: translateX(0); }
+            20% { text-shadow: 1px -1px 18px rgba(255, 0, 0, 0.7); transform: translateX(-2px); }
+            40% { text-shadow: -1px 1px 18px rgba(255, 0, 0, 0.7); transform: translateX(2px); }
+            60% { text-shadow: 2px -2px 20px rgba(255, 0, 0, 0.8); transform: translateX(-3px); }
+            80% { text-shadow: -2px 2px 20px rgba(255, 0, 0, 0.8); transform: translateX(3px); }
+        }
+
+        /* --- Menú de Navegación (Secciones Principales) --- */
+        .main-nav-container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 30px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: row; /* ¡CAMBIO CLAVE: Una al lado de la otra! */
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            justify-content: center; /* ¡Centra los elementos horizontalmente! */
+            align-items: center; /* Centra verticalmente si los elementos tienen diferentes alturas */
+            gap: 20px; /* Espacio entre los elementos */
+            z-index: 10;
+            animation: navFadeIn 1.5s ease-out forwards;
+            opacity: 0;
+            animation-delay: 2.5s;
+            max-width: 90%; /* Ajuste de ancho para que quepan */
+            margin-top: 50px;
+            margin-bottom: 50px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes navFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-nav-item {
+            font-family: 'Times New Roman', serif; /* ¡FUENTE CAMBIADA A TIMES NEW ROMAN! */
+            color: #FF6600;
+            text-decoration: none;
+            font-size: 1.8em; /* Ajuste de tamaño para que quepan una al lado de la otra */
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            text-shadow: 0 0 5px rgba(255, 102, 0, 0.5);
+            white-space: nowrap;
+            cursor: pointer;
+            display: block; /* Asegura que cada item sea un bloque para padding y margin */
+            letter-spacing: 1px;
+            min-width: 200px; /* Ancho mínimo para mantener uniformidad */
+        }
+
+        .main-nav-item:hover {
+            background-color: rgba(255, 102, 0, 0.1);
+            color: #F8F8F8;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.8);
+            text-shadow: 0 0 12px rgba(255, 102, 0, 0.9);
+            transform: scale(1.03);
+        }
+
+        /* --- Contenedor para el Contenido de las Secciones --- */
+        .section-container {
+            display: none;
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: rgba(10, 10, 10, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 0, 0, 0.6);
+            border: 1px solid #222;
+            position: relative;
+            animation: containerPulse 6s infinite alternate ease-in-out;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: multiply;
+        }
+
+        /* FONDOS ESPECÍFICOS PARA CADA SECCIÓN - IMÁGENES LOCALES */
+        #expediente-origenes {
+            background-image: url('section1_bg.jpg');
+        }
+
+        #documentacion-visual {
+            background-image: url('section2_bg.jpg');
+        }
+
+        #analisis-casos {
+            background-image: url('section3_bg.jpg');
+        }
+
+        /* Overlay de granulado para las secciones de contenido - IMAGEN LOCAL */
+        .section-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('noise_texture.png');
+            background-repeat: repeat;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: -1;
+            border-radius: 8px;
+        }
+
+        /* Cuando una sección está activa */
+        .section-container.active {
+            display: block;
+            animation: fadeInSection 1s ease-out forwards;
+        }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes containerPulse {
+            0% { border-color: #222; box-shadow: 0 0 25px rgba(0, 0, 0, 0.8); }
+            50% { border-color: #400000; box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 0, 0, 0.3); }
+            100% { border-color: #222; box-shadow: 0 0 25px rgba(0, 0, 0, 0.8); }
+        }
+
+        /* --- Estilos Comunes para las Secciones Internas --- */
+        h2 {
+            font-family: 'Silent Hill Title Font', 'Cinzel Decorative', serif;
+            color: #e0e0e0;
+            font-size: 2.8em;
+            margin-top: 0;
+            padding-bottom: 10px;
+            letter-spacing: 4px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid #444;
+        }
+
+        h3 {
+            font-family: 'Roboto Mono', monospace;
+            color: #a0a0a0;
+            font-size: 1.8em;
+            margin-top: 25px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        h4 {
+            font-family: 'Silent Hill Title Font', 'Cinzel Decorative', serif;
+            color: #FF6600;
+            font-size: 2.2em;
+            margin-top: 0;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #555;
+            text-align: center;
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 102, 0, 0.6);
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify;
+            color: #ddd;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px dashed #444;
+            height: 1px;
+            margin: 25px auto;
+            width: 80%;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+            animation: hrGlow 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes hrGlow {
+            0% { border-color: #444; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); }
+            50% { border-color: #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.7), 0 0 3px rgba(200, 200, 200, 0.05); }
+            100% { border-color: #444; box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); }
+        }
+
+        ul {
+            list-style-type: '💀 ';
+            padding-left: 25px;
+            margin-bottom: 15px;
+            color: #ddd;
+            text-align: left;
+        }
+
+        li {
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-bottom: 5px;
+        }
+
+        ul li::marker {
+            animation: skullPulse 2s infinite alternate;
+            display: inline-block;
+        }
+
+        @keyframes skullPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .game-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #444;
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-images img {
+            max-width: 220px;
+            height: auto;
+            border: 3px solid #222;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, filter 0.3s ease-in-out;
+            cursor: pointer;
+            filter: grayscale(70%) brightness(60%);
+        }
+
+        .game-images img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 102, 0, 0.9),
+                        0 0 30px rgba(0, 0, 0, 0.9);
+            filter: grayscale(0%) brightness(100%);
+        }
+
+        a {
+            color: #DC143C;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        a:hover {
+            color: #FF6347;
+            text-decoration: underline;
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+        }
+
+        .back-to-main {
+            display: inline-block;
+            margin-top: 30px;
+            font-family: 'Roboto Mono', monospace;
+            color: #FF6600;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            text-shadow: 0 0 5px rgba(255, 102, 0, 0.5);
+            cursor: pointer;
+        }
+
+        .back-to-main:hover {
+            background-color: rgba(255, 102, 0, 0.1);
+            color: #F8F8F8;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.8);
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.9);
+            transform: translateX(-5px);
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #777;
+            font-size: 0.9em;
+            border-top: 1px solid #222;
+            box-shadow: inset 0 8px 20px rgba(0, 0, 0, 0.8);
+            margin-top: auto;
+            animation: footerFadeIn 3s ease-out forwards;
+            opacity: 0;
+            animation-delay: 3s;
+        }
+
+        @keyframes footerFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Media queries para pantallas pequeñas */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3.5em;
+                letter-spacing: 5px;
+                padding: 15px 25px;
+                margin-bottom: 20px;
+            }
+            .main-nav-container {
+                width: 95%;
+                padding: 20px 10px;
+                gap: 10px;
+                flex-direction: column; /* Vuelve a columna en pantallas pequeñas */
+            }
+            .main-nav-item {
+                font-size: 1.6em;
+                padding: 12px 18px;
+                min-width: unset; /* Elimina el ancho mínimo en pantallas pequeñas */
+            }
+            .section-container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content" id="main-landing">
+        <header>
+            <h1>Silent Hill</h1>
+        </header>
+
+        <div class="main-nav-container">
+            <a onclick="showSection('expediente-origenes')" class="main-nav-item">Expediente: Orígenes</a>
+            <a onclick="showSection('documentacion-visual')" class="main-nav-item">Documentación Visual</a>
+            <a onclick="showSection('analisis-casos')" class="main-nav-item">Análisis de Casos</a>
+        </div>
+    </div>
+
+    <div id="expediente-origenes" class="section-container">
+        <h2>Expediente: Orígenes</h2>
+        <hr>
+        <h3>Creación y Pesadillas Primigenias</h3>
+        <p>La franquicia de **Silent Hill** fue concebida por <a href="https://en.wikipedia.org/wiki/Team_Silent" target="_blank">Team Silent</a>, un enigmático colectivo de desarrolladores dentro de **Konami Computer Entertainment Tokyo**. Su visión era un terror que no dependiera del sobresalto fácil, sino que se enraíza en la psique. Buscaron perturbar la mente del jugador a través de la atmósfera, narrativas complejas y un profundo sentido de lo desconocido.</p>
+        <p>Las influencias que moldearon este universo son tan densas como la niebla de Silent Hill:</p>
+        <ul>
+            <li><strong>Alegorías Cinematográficas:</strong> Obra de directores como **David Lynch** ("Eraserhead") por su surrealismo perturbador, y **Adrian Lyne** ("Jacob's Ladder") por su magistral borrado de la línea entre realidad y alucinación.</li>
+            <li><strong>Ecos Literarios:</strong> Resonancias de **H.P. Lovecraft** y **Edgar Allan Poe**, explorando el terror cósmico y psicológico que trasciende la comprensión humana.</li>
+            <li><strong>Simbolismo y Arquetipos:</strong> Inmersión en folklore, simbolismo religioso y arquetipos junguianos, dotando a las criaturas y escenarios de un significado profundo y a menudo grotesco.</li>
+            <li><strong>Reflejos Internos:</strong> Se rumorea que los propios miedos y ansiedades del equipo de desarrollo infundieron una autenticidad visceral al retorcido mundo de Silent Hill.</li>
+        </ul>
+        <h3>Primer Contacto: El Lanzamiento Original (1999)</h3>
+        <ul>
+            <li><strong>Japón:</strong> 31 de enero de 1999</li>
+            <li><strong>Norteamérica:</strong> 23 de febrero de 1999</li>
+            <li><strong>Europa:</strong> 1 de agosto de 1999</li>
+        </ul>
+        <a onclick="showSection('main-landing')" class="back-to-main">&larr; Volver a la Página Principal</a>
+    </div>
+
+    <div id="documentacion-visual" class="section-container">
+        <h2>Documentación Visual: Archivos de Juego</h2>
+        <p>Una breve colección de portadas que representan la evolución del horror psicológico.</p>
+        <div class="game-images">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/96/Silent_Hill_video_game_cover.png/250px-Silent_Hill_video_game_cover.png" alt="Portada de Silent Hill 1">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Silent_Hill_2.jpg/250px-Silent_Hill_2.jpg" alt="Portada de Silent Hill 2">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ca/Sh3_boxart.jpg/250px-Sh3_boxart.jpg" alt="Portada de Silent Hill 3">
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/ab/Silent2002.jpg" alt="Portada de Silent Hill 4">
+        </div>
+        <a onclick="showSection('main-landing')" class="back-to-main">&larr; Volver a la Página Principal</a>
+    </div>
+
+    <div id="analisis-casos" class="section-container">
+        <h2>Análisis de Casos: Narrativas Principales</h2>
+        <p>La franquicia de Silent Hill raramente sigue una cronología lineal; en cambio, explora historias independientes o vagamente conectadas, todas convergiendo en el enigmático pueblo. El pueblo, en sí mismo, es una entidad que manifiesta los traumas y culpas más profundos de quienes se aventuran en él, transformando miedos en horribles realidades tangibles.</p>
+
+        <div class="game-section">
+            <h4>Caso #001: Silent Hill (1999)</h4>
+            <h3>Sujeto Principal: Harry Mason</h3>
+            <ul class="character-list">
+                <li>Un padre desesperado, Harry Mason, se adentra en el infierno nebuloso de Silent Hill tras un accidente automovilístico, buscando a su hija adoptiva, Cheryl.</li>
+            </ul>
+            <h3>Propósito de la Misión:</h3>
+            <p>La búsqueda de Harry lo arrastra por un pueblo retorcido, enfrentándose a criaturas grotescas y desvelando la siniestra historia de un culto local y una niña con poderes sobrenaturales. Su objetivo es encontrar a Cheryl y sobrevivir a la manifestación de los horrores del pueblo. El desenlace varía, pero siempre implica la confrontación con la verdad del culto y el destino de Alessa Gillespie.</p>
+        </div>
+
+        <div class="game-section">
+            <h4>Caso #002: Silent Hill 2 (2001)</h4>
+            <h3>Sujeto Principal: James Sunderland</h3>
+            <ul class="character-list">
+                <li>James Sunderland, atormentado por el duelo, es atraído a Silent Hill por una carta críptica de su esposa, Mary, fallecida hace tres años.</li>
+            </ul>
+            <h3>Propósito de la Misión:</h3>
+            <p>En su descenso a la niebla espectral, James se encuentra con otras almas perturbadas y, lo más aterrador, confronta las encarnaciones de su propia culpa y deseo, simbolizadas por la icónica figura de **Pyramid Head**. Sus objetivos son desentrañar la verdad sobre Mary y su propia implicación, confrontar sus demonios internos y comprender la naturaleza de los horrores que lo acechan. Múltiples finales reflejan el viaje psicológico del jugador y la aceptación de la dolorosa verdad.</p>
+        </div>
+        <a onclick="showSection('main-landing')" class="back-to-main">&larr; Volver a la Página Principal</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Silent Hill Archive - Expediente de Fans No Oficial</p>
+        <p>Este sitio es una creación de fan para fan. Todos los derechos de la franquicia Silent Hill pertenecen a Konami Digital Entertainment.</p>
+    </footer>
+
+    <script>
+        // JavaScript para mostrar/ocultar secciones
+        function showSection(sectionId) {
+            // Ocultar todas las secciones de contenido
+            const sections = document.querySelectorAll('.section-container');
+            sections.forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+
+            // Ocultar o mostrar el contenido principal (título y menú)
+            const mainContent = document.getElementById('main-landing');
+            if (sectionId === 'main-landing') {
+                mainContent.style.display = 'flex';
+            } else {
+                mainContent.style.display = 'none';
+            }
+
+            // Mostrar la sección solicitada
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+                activeSection.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Inicializar: mostrar la sección principal al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('main-landing');
+
+            // Script de depuración para verificar la carga de recursos locales (¡muy útil!)
+            const checkImageLoad = (src, name) => {
+                const img = new Image();
+                img.onload = () => console.log(`${name} detectado y cargado.`);
+                img.onerror = () => console.error(`ERROR: ${name} no se detectó o no se pudo cargar. Revisa la ruta: ${src}`);
+                img.src = src;
+            };
+
+            checkImageLoad('main_bg.jpg', 'Fondo principal (main_bg.jpg)');
+            checkImageLoad('section1_bg.jpg', 'Fondo de sección 1 (section1_bg.jpg)');
+            checkImageLoad('section2_bg.jpg', 'Fondo de sección 2 (section2_bg.jpg)');
+            checkImageLoad('section3_bg.jpg', 'Fondo de sección 3 (section3_bg.jpg)');
+            checkImageLoad('noise_texture.png', 'Textura de ruido (noise_texture.png)');
+
+            const h1Element = document.querySelector('h1');
+            const h1Font = window.getComputedStyle(h1Element).fontFamily;
+            if (h1Font.includes('Silent Hill Title Font')) {
+                console.log('Fuente "Silent Hill Title Font" aplicada a h1.');
+            } else {
+                console.warn('ADVERTENCIA: "Silent Hill Title Font" no se pudo aplicar. Asegúrate de que "SILENT HILL FONT.ttf" esté en la carpeta "silent hill data/silent hill text" y la ruta sea correcta.');
+            }
+
+            const navItem = document.querySelector('.main-nav-item');
+            const navItemFont = window.getComputedStyle(navItem).fontFamily;
+            if (navItemFont.includes('Times New Roman')) {
+                console.log('Fuente "Times New Roman" aplicada a los elementos de navegación principales.');
+            } else {
+                console.warn('ADVERTENCIA: "Times New Roman" no se pudo aplicar a los elementos de navegación. Revisa los estilos.');
+            }
+        });
+    </script>
+</body>
+</html>
